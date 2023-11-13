@@ -1,0 +1,72 @@
+.row {
+    display: flex;
+    align-items: flex-start;
+    /* flex-wrap: wrap; */
+}
+
+/* Class for defining columns */
+.col-4 {
+    width: 33.33%; /* Chia row thành 3 cột bằng nhau */
+    padding: 10px; /* Thêm padding cho cột */
+    float: left; 
+    margin-bottom: 10px;
+}
+
+/* Clearfix để xử lý lỗi khi sử dụng float */
+.row::after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+@media screen and (max-width: 768px) {
+    .col-sm-4 {
+        width: 33.33%; /* Chia row thành 3 cột bằng nhau cho small screens */
+        float: left; /* Sử dụng float để cột nằm cạnh nhau */
+        padding: 10px; /* Thêm padding cho cột */
+        box-sizing: border-box; /* Để padding không làm thay đổi width */
+    }
+}
+
+
+.col-6 {
+    width: 50%; /* Chia đôi row thành 2 cột */
+    padding: 10px; /* Thêm padding cho cột */
+    /* Thêm margin để tạo khoảng cách giữa các cột */
+    margin-bottom: 10px;
+}
+
+@media screen and (max-width: 768px) {
+    .col-6 {
+        width: 100%; /* Khi màn hình thu nhỏ, cột sẽ chiếm toàn bộ width */
+    }
+}
+
+.btn-danger {
+    padding: 8px 20px;
+    font-size: 20px;
+    font-weight: bold;
+    background-color: red;
+    color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.btn {
+    padding: 8px 20px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #0866FF;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.alert-warning {
+    margin-top: 20px;
+    background: #ff8080;
+    border-radius: 10px;
+    padding: 24px;
+    text-align: center;
+    color: #fff;
+}
