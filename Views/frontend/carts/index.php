@@ -48,8 +48,15 @@
                             </td>
                             <td>{$val['price']}</td>
                             <td>
-                                <a href=\"\">
-                                    <button class=\"btn-danger\">Xóa</button>
+                                <a style=\"cursor: pointer;
+                                padding: 8px 12px;
+                                text-decoration: none;
+                                color: #fff;
+                                background-color: brown;
+                                font-size: 22px;
+                                border-radius: 4px;
+                                \" href=\"?controller=cart&action=deleteOneItemInCart&product_id={$val['product_id']}\">
+                                    XÓA
                                 </a>
                             </td>
                         </tr>";
@@ -58,14 +65,15 @@
                     
                 </tbody>
             </table>
-            <h2 style="text-align: right">Tổng tiền: <?php echo $totalPrice ?></h2>
-            <a style="text-decoration: none;" href="?controller=cart&action=deleteAllItemInCart">
-                <button class="btn">Xóa tất cả</button>
+            <h2 style="text-align: right;margin-bottom: 100px;">Tổng tiền: <?php echo $totalPrice ?></h2>
+            <a class="btn" style="text-decoration: none;" href="?controller=cart&action=deleteAllItemInCart">
+                Xóa tất cả
             </a>
             <!-- <a href="?controller=cart&action=updateCartItemQuantity">
                 <button class="btn">Cập nhật số lượng</button>
             </a> -->
             <button type="submit" class="btn">Cập nhật số lượng</button>
+            <a style="text-decoration: none; float:right" href="" class="btn">Thanh Toán</a>
         </form>
         <!-- End else -->
         <?php }?>

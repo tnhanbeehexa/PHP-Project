@@ -14,7 +14,7 @@
 					echo '<li class="nav-bar__item"><a href="?controller=login&action=logout">Đăng xuất</a></li>';
                 } else {
                     echo '<li class="nav-bar__item"><a href="?controller=login&action=index">Đăng nhập</a></li>';
-                    echo '<li class="nav-bar__item"><a href="">Đăng ký</a></li>';
+                    echo '<li class="nav-bar__item"><a href="?controller=register&action=index">Đăng ký</a></li>';
                 }
                 ?>
             </ul>

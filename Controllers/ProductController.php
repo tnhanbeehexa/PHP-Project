@@ -70,6 +70,17 @@
             $this->productModel->updateData($id, $data);
         }
 
+        public function showDetailProduct() {
+            $product_id = $_GET['product_id'];
+            $pageTitle = 'Chi tiết sản phẩm';
+
+            $product = $this->productModel->getProductById($product_id);
+            return $this->view('frontend.products.show', [
+                'product' => $product,
+                'pageTitle' => $pageTitle,
+            ]);
+        }
+
         public function delete() 
         {
             $id = $_GET['id'];

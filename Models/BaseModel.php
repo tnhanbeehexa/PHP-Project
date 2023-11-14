@@ -28,6 +28,8 @@ class BaseModel extends Database {
     public function findById($table, $id, $column) 
     {
         $sql = "SELECT * FROM {$table} WHERE {$column} = {$id}";
+
+        // die($sql);
         $query = $this->__query($sql);
         $data = [];
         while($row = mysqli_fetch_assoc($query)) {

@@ -45,18 +45,22 @@
                 // print_r($products);
                 // echo '</pre>';
                 foreach($products as $key => $product) {
-                    echo '<div class="card col-4" style="margin-bottom: 24px">
-                            <img src="'. $product['image'] .'" class="card-img-top" alt="'.$product['name'] .'">
-                            <div class="card-body">
-                                <h2 class="card-title">'. $product['name'] .'</h2>
-                                <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card\'s content.</p>
-                                <a href="?controller=cart&action=addCartItem&product_id=' .$product['product_id'].'&product_name=' . $product['name'].'&product_price='.$product['price'].'&product_quantity='. $product['quantity'].'" class="btn btn-primary btn-buy">Buy</a>
-                            </div>
-                            <div class="card-footer">
-                                <p class="product-price">đ '. $product['price'] .'</p>
-                            </div>
-                        </div>
-                ';
+                    $productHtml = '<div class="card col-4" style="margin-bottom: 24px">
+                                        <a href="?controller=product&action=showDetailProduct&product_id='.$product['product_id'].'">
+                                            <img src="'. $product['image'] .'" class="card-img-top" alt="'.$product['name'] .'">
+                                        </a>
+                                        <div class="card-body">
+                                            <h2 class="card-title">'. $product['name'] .'</h2>
+                                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card\'s content.</p>
+                                            <a href="?controller=cart&action=addCartItem&product_id=' .$product['product_id'].'&product_name=' . $product['name'].'&product_price='.$product['price'].'&product_quantity='. $product['quantity'].'" class="btn btn-primary btn-buy">Buy</a>
+                                        </div>
+                                        <div class="card-footer">
+                                            <p class="product-price">đ '. $product['price'] .'</p>
+                                        </div>
+                                    </div>';
+                    $decodedProductHtml = html_entity_decode($productHtml);
+
+                    echo $decodedProductHtml;
                 }
             ?>
         </div>

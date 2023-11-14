@@ -25,6 +25,18 @@ class ProductModel extends BaseModel{
         }
         return $data;
     }
+
+    public function getProductById($product_id) {
+        $sql = "SELECT * FROM ". self::TABLE." WHERE product_id = $product_id";
+        $result = $this->__query($sql);
+
+        if($result && $result->num_rows > 0) {
+            while($row = mysqli_fetch_assoc($result)) {
+                // print_r($row);
+                return $row;
+            }
+        }
+    }
     
     public function store($data)
     {

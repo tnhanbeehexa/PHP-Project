@@ -45,6 +45,16 @@ class LoginController extends BaseController
         session_destroy();
         header('Location: ?controller=login&action=index');
     }
+
+    public function register() {
+        $title = 'Chào mừng tới đăng kí';
+        die(123);
+        $this->view('frontend.users.register', [
+            'title' => $title,
+        ]);
+
+        
+    }
 }
 
 ?>

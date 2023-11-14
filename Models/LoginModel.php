@@ -36,5 +36,7 @@ class LoginModel extends BaseModel {
 
         return false;
     }
+
+    
 }
 ?>

@@ -16,17 +16,21 @@
 ?>
 
 <div class="container">
-    <h1><?php echo $title ?></h1>
-    <form action="?controller=login&action=login" method="POST">
+    <h1><?php echo isset($title) && !empty($title) ? $title : (isset($notification) && !empty($notification) ? $notification : ''); ?></h1>
+    <form action="?controller=register&action=register" method="POST">
         <label style="width: 200px; font-size: 20px; display: inline-block; margin-top: 12px;" for="user_name">Nhập tên đăng nhập</label>
-        <input style="padding: 8px 16px; font-size: 18px; border: 1px solid #ccc; border-radius: 4px;" type="text" name="user_name" id="user_name" placeholder="Tên đăng nhập...">
+        <input style="padding: 8px 16px; font-size: 18px; border: 1px solid #ccc; border-radius: 4px;" type="text" name="user_name" id="user_name" placeholder="Tên đăng nhập..." required>
+        <br />
+        <label style="width: 200px; font-size: 20px; display: inline-block; margin-top: 12px;" for="emailField">Nhập Email</label>
+        <input id="emailField" style="padding: 8px 16px; font-size: 18px; border: 1px solid #ccc; border-radius: 4px;" type="email" name="email" id="email" placeholder="abc@gmail.com" required>
         <br />
         <label style="width: 200px; font-size: 20px; display: inline-block; margin-top: 12px;" for="password">Nhập password</label>
-        <input id="passwordField" style="padding: 8px 16px; font-size: 18px; border: 1px solid #ccc; border-radius: 4px;" type="password" name="password" id="password" placeholder="Mật khẩu...">
+        <input id="passwordField" style="padding: 8px 16px; font-size: 18px; border: 1px solid #ccc; border-radius: 4px;" type="password" name="password" id="password" placeholder="Mật khẩu..." required>
         <br />
-        <input id="passwordToggle" style="margin-left: 205px; margin-top: 8px" type="checkbox" > Hiển thị mật khẩu
+        <input id="passwordToggle" style="margin-left: 205px; margin-top: 8px" type="checkbox" > 
+        <label for="passwordToggle">Hiển thị mật khẩu</label>
         <br />
-        <button style="margin: 30px 0 0 313px" class="btn" type="submit">Đăng nhập</button>
+        <button style="margin: 30px 0 0 313px" class="btn" type="submit">Đăng kí</button>
     </form>
 </div>
 <script>
