@@ -4,7 +4,18 @@ class CartModel extends BaseModel {
     const TABLE = 'carts';
     const SUB_TABLE = 'cart_items';
     public function getAllCartItemsByCartId($cartId) {
-        return $this->findById(self::SUB_TABLE, $cartId, 'cart_id');
+        $sql = "SELECT * FROM " . self::SUB_TABLE . " WHERE cart_id = $cartId";
+        $result = $this->__query($sql);
+
+        $cartItems = [];
+
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $cartItems[] = $row;
+            }
+        }
+
+        return $cartItems;
     }
 
     public function checkCartExists($userId) {
@@ -21,7 +32,7 @@ class CartModel extends BaseModel {
     }
 
     public function checkCartItemExists($cartId) {
-        $sql = "SELECT * FROM ". self::SUB_TABLE. " WHERE cart_id = $cartId";
+        $sql = "SELECT * FROM ". self::SUB_TABLE. " WHERE cart_id = $cartId AND cart_item_status = 'pending'";
         // die($sql);
         $result = $this->__query($sql);
 
@@ -69,10 +80,10 @@ class CartModel extends BaseModel {
        
     }
 
-    public function addItemToCart($cart_id, $product_id, $product_quantity, $product_price, $product_name) {
+    public function addItemToCart($cart_id, $product_id, $product_quantity, $product_price, $product_name, $cart_item_status) {
         
         // Kiểm tra xem sản phẩm đã tồn tại trong giỏ hàng chưa
-        $existingItemSql = "SELECT quantity FROM " . self::SUB_TABLE . " WHERE cart_id = ? AND product_id = ?";
+        $existingItemSql = "SELECT quantity FROM " . self::SUB_TABLE . " WHERE cart_id = ? AND product_id = ? AND cart_item_status = '$cart_item_status'";
         $existingItemStmt = $this->connect->prepare($existingItemSql);
         $existingItemStmt->bind_param("ii", $cart_id, $product_id);
         $existingItemStmt->execute();
@@ -96,9 +107,9 @@ class CartModel extends BaseModel {
             }
         } else {
             // Nếu sản phẩm chưa tồn tại, thêm mới vào giỏ hàng
-            $insertSql = "INSERT INTO " . self::SUB_TABLE . " (cart_id, product_id, quantity, price, product_name) VALUES (?, ?, ?, ?, ?)";
+            $insertSql = "INSERT INTO " . self::SUB_TABLE . " (cart_id, product_id, quantity, price, product_name, cart_item_status) VALUES (?, ?, ?, ?, ?, ?)";
             $insertStmt = $this->connect->prepare($insertSql);
-            $insertStmt->bind_param("iiids", $cart_id, $product_id, $product_quantity, $product_price, $product_name);
+            $insertStmt->bind_param("iiidss", $cart_id, $product_id, $product_quantity, $product_price, $product_name, $cart_item_status);
             // die($insertSql);
             $result = $insertStmt->execute();
             $insertStmt->close();
@@ -129,22 +140,19 @@ class CartModel extends BaseModel {
     }
     public function getTotalPrice() {
         $cart_id = $_SESSION['cart_id'];
-        $sql = 'SELECT * FROM ' . self::SUB_TABLE . " WHERE cart_id = {$cart_id}";
-        // die($sql);
+        $sql = "SELECT * FROM " . self::SUB_TABLE . " WHERE cart_id = {$cart_id} AND cart_item_status = 'pending'";
         $result = $this->__query($sql);
-
-        $totaPrice = 0;
-
-        if($result && $result->num_rows > 0) {
-            while($row = $result->fetch_assoc()) {
-                $totaPrice += (int)$row['quantity'] * (double)$row['price'];
-                // echo "Đây là quantity: {$row['quantity']} đây là price: {$row['price']}";
-                // var_dump($totaPrice);
+    
+        $totalPrice = 0;
+    
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $totalPrice += (int)$row['quantity'] * (double)$row['price'];
             }
         }
-        // die($totaPrice);
-        return $totaPrice;
+        return $totalPrice;
     }
+    
 
     public function getCartItemQuantity($product_id) {
         // session_start();
@@ -182,7 +190,7 @@ class CartModel extends BaseModel {
     }
 
     public function isItemExistsInCart($cart_id, $product_id) {
-        $existingItemSql = "SELECT quantity FROM " . self::SUB_TABLE . " WHERE cart_id = ? AND product_id = ?";
+        $existingItemSql = "SELECT quantity FROM " . self::SUB_TABLE . " WHERE cart_id = ? AND product_id = ? AND cart_item_status = 'pending'";
         $existingItemStmt = $this->connect->prepare($existingItemSql);
         $existingItemStmt->bind_param("ii", $cart_id, $product_id);
         $existingItemStmt->execute();
@@ -206,12 +214,12 @@ class CartModel extends BaseModel {
         } else {
             // Nếu sản phẩm chưa tồn tại, thêm mới vào giỏ hàng
             $product = $this->getCartItemById($product_id);
-            $this->addNewItemToCart($product, $cart_id);
+            $this->addNewItemToCart($product, $cart_id, $quantity);
         }
     }
     // Trong CartModel
     private function getExistingItemQuantity($cart_id, $product_id) {
-        $existingItemSql = "SELECT quantity FROM " . self::SUB_TABLE . " WHERE cart_id = ? AND product_id = ?";
+        $existingItemSql = "SELECT quantity FROM " . self::SUB_TABLE . " WHERE cart_id = ? AND product_id = ? AND cart_item_status = 'pending'";
         $existingItemStmt = $this->connect->prepare($existingItemSql);
         $existingItemStmt->bind_param("ii", $cart_id, $product_id);
         $existingItemStmt->execute();
@@ -224,7 +232,7 @@ class CartModel extends BaseModel {
 
     // Trong CartModel
     private function updateCartItemQuantityInDatabase($cart_id, $product_id, $newQuantity) {
-        $updateSql = "UPDATE " . self::SUB_TABLE . " SET quantity = ? WHERE cart_id = ? AND product_id = ?";
+        $updateSql = "UPDATE " . self::SUB_TABLE . " SET quantity = ? WHERE cart_id = ? AND product_id = ? AND cart_item_status = 'pending'";
         $updateStmt = $this->connect->prepare($updateSql);
         $updateStmt->bind_param("iii", $newQuantity, $cart_id, $product_id);
         $updateStmt->execute();
@@ -232,10 +240,11 @@ class CartModel extends BaseModel {
     }
 
     // Trong CartModel
-    private function addNewItemToCart($product, $cart_id) {
-        $insertSql = "INSERT INTO " . self::SUB_TABLE . " (cart_id, product_id, quantity, price, product_name) VALUES (?, ?, ?, ?, ?)";
+    private function addNewItemToCart($product, $cart_id, $quantity) {
+        $cart_item_status = 'pending';
+        $insertSql = "INSERT INTO " . self::SUB_TABLE . " (cart_id, product_id, quantity, price, product_name, cart_item_status) VALUES (?, ?, ?, ?, ?, ?)";
         $insertStmt = $this->connect->prepare($insertSql);
-        $insertStmt->bind_param("iiids", $cart_id, $product['product_id'], $product['quantity'], $product['price'], $product['name']);
+        $insertStmt->bind_param("iiidss", $cart_id, $product['product_id'], $quantity, $product['price'], $product['name'], $cart_item_status);
         $insertStmt->execute();
         $insertStmt->close();
     }
@@ -262,4 +271,80 @@ class CartModel extends BaseModel {
             }
         } 
     }
+
+    public function getUserAddress($user_id) {
+        $sql = "SELECT user_address FROM users WHERE user_id = $user_id ";
+        // die($sql);
+        $result = $this->__query($sql);
+        // echo '<pre>';
+        // print_r($result);
+        // echo '</pre>';
+        if($result && $result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                // echo '<pre>';
+                // print_r($row);
+                // echo '</pre>';
+                return $row['user_address'];
+            }
+        }
+    }
+
+    public function addPayment($user_id, $cart_id, $amount, $payment_status, $payment_date, $payment_method) {
+        
+        $sqlResetAutoIncrement = "ALTER TABLE payment AUTO_INCREMENT = 1";
+        $this->__query($sqlResetAutoIncrement);
+
+        $sql = "INSERT INTO payment (user_id, cart_id, amount, payment_status, payment_date, payment_method) VALUES (?, ?, ?, ?, STR_TO_DATE(?, '%Y-%m-%d'), ?)";
+        $stmt = $this->connect->prepare($sql);
+        $stmt->bind_param("iidsss", $user_id, $cart_id, $amount, $payment_status, $payment_date, $payment_method);
+        $stmt->execute();
+
+        $payment_id = $stmt->insert_id;
+
+        $stmt->close();
+
+        return $payment_id;
+    }
+    
+    public function updateCartItemStatus($cart_id, $cart_item_status, $payment_id) {
+        $sql = 'SELECT * FROM '.self::SUB_TABLE . ' WHERE cart_id = '.$cart_id;
+        $result = $this->__query($sql);
+        if($result && $result->num_rows > 0) {
+            while($row = $result->fetch_assoc()) {
+                if($row['cart_item_status'] == 'pending') {
+                    // echo '<pre>';
+                    // print_r($row);
+                    // echo '</pre>';
+                    $sql = "UPDATE " . self::SUB_TABLE . " SET cart_item_status = ? , payment_id = ? WHERE cart_id = ? AND cart_item_status = 'pending'";
+                    $stmt = $this->connect->prepare($sql);
+                    $stmt->bind_param("sii", $cart_item_status, $payment_id, $cart_id);
+                    $stmt->execute();
+                    $stmt->close();
+                }
+            }   
+        }
+
+
+        // die($sql);
+        // die();
+    }
+    
+    public function getPendingCartItems($cartId) {
+        $sql = "SELECT * FROM " . self::SUB_TABLE . " WHERE cart_id = ? AND cart_item_status = 'pending'";
+        $stmt = $this->connect->prepare($sql);
+        $stmt->bind_param("i", $cartId);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        $cartItems = [];
+    
+        if ($result && $result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $cartItems[] = $row;
+            }
+        }
+    
+        return $cartItems;
+    }
+    
 }

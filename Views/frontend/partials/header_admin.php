@@ -1,33 +1,24 @@
+<?php
+	// session_start();
+?>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container">
         <nav>
             <ul class="header__left nav-bar">
-                <li class="nav-bar__item"><a href="?controller=product&action=index">Trang chủ</a></li>
-                <li style="margin-right: 186px;" class="nav-bar__item"><a href="?controller=cart&action=index">Giỏ hàng</a></li>
-                <li class="nav-bar__item">
-					<label style="font-size: 20px;margin-right: 10px;" for="search">Tìm kiếm</label>
-					<input style="padding: 8px 12px; font-size: 16px; " id="search" type="text" name="search" value="<?php if(isset($_GET['search'])) {echo $_GET['search'];}else {echo '';}?>">
-				</li>  
+                <li class="nav-bar__item"><a href="?controller=admin&action=index">Quản lý sản phẩm</a></li>
+                <li style="margin-right: 186px;" class="nav-bar__item"><a href="?controller=admin&action=updatePaymentStatus">Quản lý đơn hàng</a></li>
+                
             </ul>
             <ul class="header__right nav-bar">
                 <?php
+				// echo 	$_SESSION['admin_logged_in'];
                 // Kiểm tra xem session 'user' đã được thiết lập hay chưa
-                if (isset($_SESSION['user'])) {
-                    echo '<li style="position: relative;" class="nav-bar__item header__user" id="userDropdown"><a href="#">Welcome ' . $_SESSION['user'] . '</a>
-							<div class="dropdown-content" id="userDropdownContent">
-								<ul>
-									<li>
-										<a href="?controller=payment&action=index">Đơn mua của tôi</a>
-									</li>
-									<li><a href="#">Tài khoản</a></li>
-								</ul>
-							</div>
+                if (isset($_SESSION['admin_logged_in'])) {
+                    echo '<li style="position: relative;" class="nav-bar__item header__user" id="userDropdown"><a href="#">Welcome ' . $_SESSION['admin_logged_in'] . '</a>
+							
 						</li>';
 					
 					echo '<li class="nav-bar__item"><a href="?controller=login&action=logout">Đăng xuất</a></li>';
-                } else {
-                    echo '<li class="nav-bar__item"><a href="?controller=login&action=index">Đăng nhập</a></li>';
-                    echo '<li class="nav-bar__item"><a href="?controller=register&action=index">Đăng ký</a></li>';
                 }
                 ?>
             </ul>

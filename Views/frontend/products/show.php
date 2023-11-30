@@ -25,7 +25,7 @@
         <div class="product__container">
             <form action="?controller=cart&action=updateOneCartItemQuantity" method="POST">
                 <div class="product__detail" style="display: flex;">
-                    <img style="width: 400px;height: 400px;" src="<?php echo $product['image'] ?>" alt="<?php echo $product['name'] ?>">
+                    <img style="width: 400px;height: 400px;" src="Public/images/<?php echo $product['image'] ?>" alt="<?php echo $product['name'] ?>">
                     <div class="product__detail__description" style="display: flex; flex-direction: column;margin-left: 24px;">
                         <h1 class="product__detail__name"><?php echo $product['name']?></h1>
                         <div class="product__detail__price-block" style="display: flex;align-items: flex-start;margin-top: 24px; flex-direction: column;">

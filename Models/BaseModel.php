@@ -27,14 +27,12 @@ class BaseModel extends Database {
 
     public function findById($table, $id, $column) 
     {
-        $sql = "SELECT * FROM {$table} WHERE {$column} = {$id}";
-
-        // die($sql);
-        $query = $this->__query($sql);
-        $data = [];
-        while($row = mysqli_fetch_assoc($query)) {
-            array_push($data, $row);
-        }
+        $sql = "SELECT * FROM {$table} WHERE {$column} = ?";
+        $stmt = mysqli_prepare($this->connect, $sql);
+        mysqli_stmt_bind_param($stmt, "s", $id);
+        mysqli_stmt_execute($stmt);
+        $result = mysqli_stmt_get_result($stmt);
+        $data = mysqli_fetch_assoc($result);
         return $data;
     }   
 
@@ -87,7 +85,11 @@ class BaseModel extends Database {
 
     protected function __query($sql) 
     {
-        return mysqli_query($this->connect, $sql);
+        $query = mysqli_query($this->connect, $sql); // Use the established connection for querying
+        if (!$query) {
+            die(mysqli_error($this->connect)); // Handle query errors here
+        }
+        return $query;
     }
 
     protected function loadUserId() {

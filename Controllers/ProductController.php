@@ -12,15 +12,18 @@
 
         // Danh sách sản phẩm
         public function index() {
+            $numPage = 0;
+            $quantityOfButtonNumpage = $this->productModel->getQuantityOfNumpage()/6;
+            if(isset($_GET['numpage'])) {
+                $numPage = $_GET['numpage'];
+            }
             $categories = $this->categories->getAllCategories();
-            // echo '<prev>';
-            // print_r($categories);
-            // echo '</prev>';
-            $products = $this->productModel->getAll();
+            
+            $products = $this->productModel->getAll($numPage);
             $pageTitle = 'Trang danh sách sản phẩm';
             
             if(isset($_GET['categoryId'])) {
-                $products = $this->productModel->getProductsByCategoryId($_GET['categoryId']);
+                $products = $this->productModel->getProductsByCategoryId($_GET['categoryId'], $numPage);
                 // echo '<prev>';
                 // print_r($products);
                 // echo '</prev>';
@@ -30,7 +33,8 @@
             return $this->view('frontend.products.index', [
                 'pageTitle' => $pageTitle,
                 'products' => $products,
-                'categories' => $categories
+                'categories' => $categories,
+                'quantityOfButtonNumpage' => $quantityOfButtonNumpage
             ]);
         }
 
@@ -78,6 +82,21 @@
             return $this->view('frontend.products.show', [
                 'product' => $product,
                 'pageTitle' => $pageTitle,
+            ]);
+        }
+
+        public function search() {
+            $search = $_GET['search'];
+            $categories = $this->categories->getAllCategories();
+            $pageTitle = 'Trang danh sách sản phẩm';
+
+
+
+            $data = $this->productModel->search($search);
+            return $this->view('frontend.products.search', [
+                'pageTitle' => $pageTitle,
+                'products' => $data,
+                'categories' => $categories
             ]);
         }
 

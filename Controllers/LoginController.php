@@ -33,7 +33,13 @@ class LoginController extends BaseController
             // ]);
             return;
         }else {
-            header('Location: ?controller=login&action=index');
+            $notification = 'Nhập sai tài khoản hoặc mật khẩu';
+            $title = "Chào mừng bạn đến với đăng nhập";
+            // header('Location: ?controller=login&action=index');
+            return $this->view('frontend.users.login', [
+                'notification' => $notification,
+                'title' => $title,
+            ]);
             
         }
     }

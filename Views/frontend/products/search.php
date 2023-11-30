@@ -28,8 +28,6 @@
                 <li>Danh mục sản phẩm</li>
                 
                 <?php 
-                    
-                    // echo $queryString;
                     foreach($categories as $category) {
                         echo "<li><a class=\"categories__link\" href=\"?controller=product&action=index&categoryId={$category['category_id']}\">".$category['category_name']."</a></li>";
                         // echo $category['category_name'];
@@ -38,25 +36,6 @@
             </ul>
         </div>
         <div class="product__container">
-            <div style="display: flex;
-                        align-items: center;
-                        justify-content: center;" class="number_of_page">
-                <?php 
-                    $i = 0;
-                    // echo $quantityOfButtonNumpage;
-                    // $urlNumPage = $_SERVER['REQUEST_URI'];
-                    // $queryString = explode('?', $urlNumPage)[1]; // Lấy phần sau dấu '?'
-                    // if(strpos($queryString, 'categoryId')) {
-                        
-                    // }
-                    while($quantityOfButtonNumpage > $i) {
-                        $numpageHtml = '<a class="btn__numPage" href="?controller=product&action=index&numpage=' .$i.'">'.$i + 1 .'</a>';
-                        $decodedProductHtml = html_entity_decode($numpageHtml);
-                        echo $decodedProductHtml;
-                        $i++;
-                    }
-                ?>
-            </div>
             <?php
                 // if(isset($_SESSION['user_id'])) {
                 //     echo "Đây là session user_id: " . $_SESSION['user_id'];
@@ -85,9 +64,7 @@
                     echo $decodedProductHtml;
                 }
             ?>
-            
         </div>
-        
     </div>
 </div>
 
